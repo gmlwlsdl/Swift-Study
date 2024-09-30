@@ -13,7 +13,18 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
+    @IBAction func clickmove(_ sender: Any) {
+        
+        // storyboard에서 컨트롤러 찾기
+        // optional binding
+        if let controller = self.storyboard?.instantiateViewController(withIdentifier: "DetailController") {
+            
+            // 컨트롤러로 이동하기
+            self.navigationController?.pushViewController(controller, animated: true)
 
-
+        }
+        
+        
+    }
 }
 
