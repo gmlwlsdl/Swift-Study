@@ -26,5 +26,12 @@ class ViewController: UIViewController {
         
         
     }
+    
+    @IBAction func movetable(_ sender: Any) {
+        if let controller = self.storyboard?.instantiateViewController(withIdentifier: "TableController"){
+            
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
 }
 
