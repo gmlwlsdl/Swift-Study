@@ -12,12 +12,17 @@ class NewsDetailController: UIViewController {
     @IBOutlet weak var ImageMain: UIImageView!
     @IBOutlet weak var LabelMain: UILabel!
     
+    var newstitle: String?
     var imgUrl: String?
     var desc: String?
     
     override func viewDidLoad() {
    
         super.viewDidLoad()
+        
+        if let title = newstitle {
+            self.navigationItem.title = title
+        }
         
         if let img = imgUrl {
             URLSession.shared.dataTask(with: URL(string: img)!) {data, response, error in

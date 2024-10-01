@@ -12,34 +12,66 @@ class TableController: UIViewController, UITableViewDataSource, UITableViewDeleg
     @IBOutlet weak var tableview: UITableView!
     
     var newsData :Array<Dictionary<String, Any>>?
+    var currentPage = 1
+    var pageSize = 20
+    var isLoading = false
     
-    func getNews() {
-        let task = URLSession.shared.dataTask(with: URL(string: "https://newsapi.org/v2/everything?q=apple&from=2024-09-29&to=2024-09-29&sortBy=popularity&apiKey=254cb254ac6845e3813ecb358251a378")!) { (data, response, error) in
+    func getNews(page: Int, pageSize: Int) {
+        guard !isLoading else { return }
+        isLoading = true
+        
+        let task = URLSession.shared.dataTask(with: URL(string: "https://newsapi.org/v2/everything?q=apple&page=\(page)&pageSize=\(pageSize)&from=2024-09-29&to=2024-09-29&sortBy=popularity&apiKey=254cb254ac6845e3813ecb358251a378")!) { (data, response, error) in
             if let dataJson = data {
                 
                 // json parsing
                 do {
-                    let json = try JSONSerialization.jsonObject(with: dataJson, options: []) as! Dictionary<String, Any>
-                    let articles = json["articles"] as! Array<Dictionary<String, Any>>
-                     
-                    // 불필요한 데이터 필터링
-                    self.newsData = articles.filter {
-                        article in
-                        if let title = article["title"] as? String {
-                            return title != "[Removed]"
+                    let json = try JSONSerialization.jsonObject(with: dataJson, options: []) as! [String: Any]
+                    if let articles = json["articles"] as? [[String: Any]] {
+                        
+                        // 불필요한 데이터 필터링
+                        let filteredArticles = articles.filter {
+                            article in
+                            if let title = article["title"] as? String {
+                                return title != "[Removed]"
+                            }
+                            return true
                         }
-                        return true
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.tableview.reloadData()
+                        
+                        if self.newsData == nil {
+                            self.newsData = filteredArticles
+                        } else {
+                            self.newsData?.append(contentsOf: filteredArticles)
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self.tableview.reloadData()
+                            self.isLoading = false
+                        }
                     }
                 }
-                catch {}
+                catch {
+                    DispatchQueue.main.async{
+                        self.isLoading = false
+                    }
+                }
             }
         }
         
         task.resume()
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - height {
+            if !isLoading {
+                currentPage += 1
+                print(currentPage)
+                getNews(page: currentPage, pageSize: pageSize)
+            }
+        }
     }
     
     func sendData(controller: NewsDetailController) {
@@ -47,7 +79,11 @@ class TableController: UIViewController, UITableViewDataSource, UITableViewDeleg
             if let indexPath = tableview.indexPathForSelectedRow {
                 let row = news[indexPath.row]
                 
-                if let r = row as? Dictionary<String, Any> {
+                if let r = row as? [String : Any] {
+                    
+                    if let title = r["title"] as? String {
+                        controller.title = title
+                    }
                     
                     if let imgUrl = r["urlToImage"] as? String {
                         controller.imgUrl = imgUrl
@@ -76,7 +112,7 @@ class TableController: UIViewController, UITableViewDataSource, UITableViewDeleg
         if let news = newsData {
             
             let row = news[idx]
-            if let r = row as? Dictionary<String, Any> {
+            if let r = row as? [String : Any] {
                 if let title = r["title"]{
                     cell.label?.text = title as? String
                 }
@@ -104,10 +140,12 @@ class TableController: UIViewController, UITableViewDataSource, UITableViewDeleg
     override func viewDidLoad() {
    
         super.viewDidLoad()
+        title = "Apple News"
+        
         tableview.dataSource = self
         tableview.delegate = self
         
-        getNews()
+        getNews(page: currentPage, pageSize: pageSize)
         
          }
 }
