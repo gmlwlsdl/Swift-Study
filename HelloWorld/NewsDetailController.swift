@@ -20,16 +20,18 @@ class NewsDetailController: UIViewController {
         super.viewDidLoad()
         
         if let img = imgUrl {
-            if let data = try? Data(contentsOf: URL(string: img)!) {
+            URLSession.shared.dataTask(with: URL(string: img)!) {data, response, error in
+                if let data = try? Data(contentsOf: URL(string: img)!) {
                 DispatchQueue.main.async {
                     self.ImageMain.image = UIImage(data: data)
                 }
-            }
+            }}.resume()
+
         }
         
         if let d = desc {
             self.LabelMain.text = d
         }
         
-         }
+    }
 }
