@@ -78,8 +78,55 @@ class TableController: UIViewController, UITableViewDataSource, UITableViewDeleg
     }
     
     // 클릭
+    // 뉴스 상세 페이지로 값을 보내는 방법은 2가지
+    // 1-1. tableview delegate
+    // 1-2. storyboard (segue)
+    // 2. 값은 보내기 전에 미리 세팅해야 함!
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("\(indexPath.row) 번째 셀 클릭")
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: "NewsDetailController") as! NewsDetailController
+        
+        if let news = newsData {
+            
+            let row = news[indexPath.row]
+            if let r = row as? Dictionary<String, Any> {
+                if let imgUrl = r["urlToImage"] as? String {
+                    controller.imgUrl = imgUrl
+                }
+                if let desc = r["description"] as? String {
+                    controller.desc = desc
+                }
+            }
+        }
+        
+        // 수동으로 이동시켜줌
+//        showDetailViewController(controller, sender: nil )
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let id = segue.identifier, id == "NewsDetail" {
+            if let controller = segue.destination as? NewsDetailController {
+                
+                if let news = newsData {
+                    if let indexPath = tableview.indexPathForSelectedRow {
+                        let row = news[indexPath.row]
+                        
+                        if let r = row as? Dictionary<String, Any> {
+                            
+                            if let imgUrl = r["urlToImage"] as? String {
+                                controller.imgUrl = imgUrl
+                            }
+                        
+                            if let desc = r["description"] as? String {
+                                controller.desc = desc
+                            }
+                        }
+                    }
+                }
+            }
+        } 
     }
     
     override func viewDidLoad() {
