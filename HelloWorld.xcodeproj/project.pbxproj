@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		895F77312CAAAD0200587620 /* HelloWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		895F77312CAAAD0200587620 /* HelloWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = HelloWorld.app; path = "/Users/heejin/Downloads/HelloWorld/build/Debug-iphoneos/HelloWorld.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,16 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				895F77332CAAAD0200587620 /* HelloWorld */,
-				895F77322CAAAD0200587620 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		895F77322CAAAD0200587620 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				895F77312CAAAD0200587620 /* HelloWorld.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,7 +99,7 @@
 			mainGroup = 895F77282CAAAD0200587620;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 895F77322CAAAD0200587620 /* Products */;
+			productRefGroup = 895F77282CAAAD0200587620;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

@@ -23,8 +23,6 @@ class ViewController: UIViewController {
             self.navigationController?.pushViewController(controller, animated: true)
 
         }
-        
-        
     }
     
     @IBAction func movetable(_ sender: Any) {
@@ -33,5 +31,14 @@ class ViewController: UIViewController {
             self.navigationController?.pushViewController(controller, animated: true)
         }
     }
+    
+    @IBAction func moveCategory(_ sender: Any) {
+        if let controller = self.storyboard?.instantiateViewController(withIdentifier: "CollectionViewController") {
+            
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+        
+    }
+    
 }
 
